@@ -1,0 +1,60 @@
+form#share-email-yarkon-form .form-group
+{
+     display: grid;
+     grid-template-columns: repeat(3,1fr);
+     align-items: baseline;
+}
+#share-email-yarkon-form
+{
+    display:block;
+}
+
+
+#share-email-yarkon-form span.help-block {
+margin-left: 25px;
+border-right: none
+}
+
+.form-field-inline-add-new-client .modal-header span ,.form-field-inline-add-new-client .modal-header .fa.fa-envelope{
+    font-size: 3rem;
+}
+.form-field-inline-add-new-client .modal-header  .fa.fa-envelope
+{
+    color:blueviolet;
+        margin-right:5px;
+
+}
+.form-field-inline-add-new-client .modal-header  .help-block
+{
+    text-align:left;
+}
+.inmodal .modal-header {
+    padding-bottom: 10px;
+}
+h2.detail-doc {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    margin: 0;
+    border-bottom: 0;
+}
+
+
+h2.detail-doc span {
+    padding-left: 20px;
+}
+
+span.help-block {
+    border-right: 1px solid #ccc;
+    padding-right: 38px;
+}
+
+h2.detail-doc span i.fa.fa-envelope {
+    font-size: 6rem !important;
+    margin-right: 5px;
+}
+
+#no_of_selected_files {
+    margin-left: 12px;
+    font-size: medium;
+}
+

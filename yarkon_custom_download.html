@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+{{if expired == False:}}
+<script type="text/javascript" src="{{=URL('static', 'js/jszip.min.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static', 'js/jszip-utils.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static', 'js/FileSaver.min.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static', 'js/bootbox.min.js')}}"></script>
+<!-- <script rel="stylesheet" src="{{=URL('static', 'css/bootstrap.min.css')}}"></script> -->
+
+<script src="{{=URL('static', 'js/jquery.js')}}"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" >
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.12.4.js"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+
+
+
+
+<head>
+
+    <title>3DUsernet</title>
+
+    <style>
+        .grad-bg {
+            background: linear-gradient(purple, black);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        .main_container_wrapper {
+            max-width: 824px;
+            width: 100%;
+            padding: 55px 15px;
+            position: relative;
+            margin: 0 auto;
+            checkAll
+        }
+
+        .gexcel_logo img {
+            display: block;
+            margin: 0 auto;
+            
+        }
+
+        .logoImg{
+            display: flex;
+            justify-content: center;
+        }
+
+        .logoImg img{
+            min-width: 220px;
+            height: 120px;
+        }
+
+        .modal_container {
+            width: calc(100% - 100px);
+            background: #fff;
+            margin: 27px auto;
+            padding: 50px;
+            border-radius: 45px;
+        }
+
+        .page_ttl {
+            font-weight: 500;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        .download_link_btn {
+            background-color: #185eff;
+            padding: 4px 12px;
+            text-decoration: none;
+            color: #fff;
+            border: 1px solid #185eff;
+            border-radius: 5px;
+        }
+
+        .download_link_btn:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .download_link_btn_active {
+            background-color: #185eff;
+            padding: 4px 12px;
+            text-decoration: none;
+            color: #fff;
+            border: 1px solid #185eff;
+            border-radius: 5px;
+        }
+
+        .download_link_btn_active:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        #selected_download_link_btn {
+            background-color: #185eff;
+            padding: 5px 15px;
+            text-decoration: none;
+            color: #fff;
+            border: 1px solid #185eff;
+            border-radius: 5px;
+        }
+
+        #selected_download_link_btn:hover {
+            background-color: transparent;
+            color: #185eff;
+        }
+
+        .download_selected_btn {
+            padding: 18px 0;
+        }
+
+        .bottom_logo {
+            text-align: right;
+        }
+
+        .copyright_text {
+            color: #fff;
+            text-align: center;
+            font-weight: 300;
+        }
+
+        .download_selected_btn a {
+            padding: 10px 15px;
+        }
+
+        .download_selected_btn_disable {
+            padding: 18px 0;
+        }
+
+        .download_selected_btn_disable a {
+            padding: 10px 15px;
+            pointer-events: none;
+            background-color: darkgrey !important;
+            font-style: oblique;
+        }
+
+        #trialLoader::before {
+            content: url(/awsv2/static/images/multi-circle.gif);
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            position: fixed;
+            display: flex;
+            align-items: center;
+            background: #000;
+            justify-content: center;
+        }
+
+        #trialLoader::after {
+            opacity: 0.8;
+        }
+
+        .download-progress {
+            content: url(/awsv2/static/images/processing.gif);
+        }
+
+        #download-progress-text {
+            margin: 20%;
+        }
+
+        .btn-info {
+            background-color: #185eff;
+
+        }
+
+        .btn-info:hover {}
+
+        .modal-dialog {
+            top: 150px;
+        }
+
+        .ui-widget-header {
+            background: #cedc98;
+            border: 1px solid #DDDDDD;
+            color: #185eff;
+            font-weight: bold;
+        }
+        .ui-progressbar-value {
+            background-color: #185eff;
+            margin: -1px;
+            height: 100%;
+        }
+        .ui-progressbar .ui-progressbar-value {
+            margin: 0px;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body class="grad-bg">
+    <div class="main_container_wrapper">
+        <div class="modal_container">
+            <div class="logo_container">
+                {{if user_company_details.logo_b64:}}
+                <div class="logoImg">
+                    <img src="{{=user_company_details.logo_b64}}" />
+                </div>
+                {{else:}}
+                <div class="gexcel_logo">
+                    <img src="{{=URL('static', 'images/logo-gexcel.png')}}"  />
+                </div>
+                {{pass}}
+            </div>
+            <div class="page_ttl">
+                <h1>File Download Page</h1>
+            </div>
+            <div class="download_files_table">
+                <table>
+                    <tr>
+                        <th><input id="download_all" name="select_all" value="1" type="checkbox"></th>
+                        <th>File Name</th>
+                        <th>File Size</th>
+                        <th>Download Link</th>
+                    </tr>
+                    {{i = 1}}
+                    {{for file_details in file_details_list:}}
+                    <tr>
+                        <td><input class="tick-box" id="tick-box{{=i}}" type="checkbox" name="fn1" file_size = {{=total_file_size_in_bytes}}></td>
+                        <td  hidden>{{=file_details['file_size_in_bytes']}}</td>
+                        <td> {{=file_details['file_name']}}</td>
+                        <td> {{=file_details['file_size']}}</td>
+                        <td><a class="download_link_btn" target="_blank" id="download_link_btn{{=i}}" type="submit"
+                                href="{{=file_details['guest_file_link_url']}}"
+                                download="{{=file_details['file_name']}}">Download</a></td>
+                    </tr>
+                    {{i += 1}}
+                    {{pass}}
+                </table>
+                <!-- <div class="download_selected_btn" id="loader">
+                  <a id="selected_download_link_btn" href="#">Download Selected</a>
+                  <span></span>
+                  <span id="download-progress-text" ></span>
+                </div> -->
+                <div class="container">
+                    <h2></h2>
+                    <!-- Trigger the modal with a button --- -  -->
+                    <button type="button" id="download-btn" class="btn btn-info " data-toggle="modal"
+                        data-target="#downloadProgressModal" disabled>Download Selected
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="downloadProgressModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-sm">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title"></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <label id="download-label" for="file"> Starting your download</label>
+                                    <div class="progressbar"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" id="cancelDownload" class="btn btn-default"
+                                        data-dismiss="modal">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="bottom_logo">
+                <img src="{{=URL('static', 'images/3Dun_ENW.png')}}" width="200px">
+            </div>
+        </div>
+        <div class="copyright_text">
+            <p><b>Copyright</b> 3DUserNet Ltd © 2021</p>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+
+{{else:}}
+
+<head>
+    <title>Expired!</title>
+    <style>
+        /** SCSS function to return a colour from a list, in hexadecimal or rgba value
+ * @param name: key used in the $colors list associated with a hexadecimal colour
+ * @param opacity: opacity value [0, 100] to be used by the rgba() colour; hex (default) to get the solid colour in hexadecimal value
+**/
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-size: 16px;
+            font-family: Helvetica, Arial, sans-serif, system-ui;
+        }
+
+        body {
+            display: block;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin: 0;
+            color: #e6e6e6;
+            height: 200px;
+            background: purple;
+            background: -webkit-linear-gradient(purple, black);
+            background: -o-linear-gradient(purple, black);
+            background: -moz-linear-gradient(purple, black);
+            background: linear-gradient(purple, black);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+
+
+        h1 {
+            --distance: .01em;
+            --dist-factor: 1;
+            position: relative;
+            display: block;
+            margin: 0;
+            font-size: 15vmax;
+            font-weight: normal;
+            font-family: monospace;
+            line-height: 1;
+            color: #db73b0;
+            filter: saturate(150%);
+        }
+
+        h1>[data-overlay] {
+            position: relative;
+        }
+
+        h1>[data-overlay]::after {
+            --dist-factor: 32;
+            content: attr(data-overlay);
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            color: #ffd200;
+            font-size: .125em;
+        }
+
+        h1,
+        h1::after,
+        h1 [data-overlay]::after {
+            backface-visibility: hidden;
+            animation: animText 3s linear infinite;
+        }
+
+        h1::after {
+            FONT-WEIGHT: 200;
+            --dist-factor: 2;
+            content: attr(data-txt);
+            position: absolute;
+            left: 0px;
+            top: 0;
+            color: #73c5c1;
+            mix-blend-mode: screen;
+        }
+
+        h1::after,
+        h1 [data-overlay]:first-child::after {
+            animation-direction: reverse;
+        }
+
+        p {
+            position: relative;
+            color: #e6e6e6;
+            text-align: center;
+        }
+
+        @keyframes animText {
+            0% {
+                transform: rotate(0deg) translate(calc(var(--distance) * -1 * var(--dist-factor)), calc(var(--distance) * -1 * var(--dist-factor))) rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg) translate(calc(var(--distance) * -1 * var(--dist-factor)), calc(var(--distance) * -1 * var(--dist-factor))) rotate(-360deg);
+            }
+        }
+
+        .modal-body {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <div><img src="{{=URL('static', 'images/3DUserNetLogo_thinner_new.png')}}" title="3DUserNet.com" style="
+                    width: 500px;
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    margin-bottom: auto;
+                    padding: 0px 75px;
+                    " /></div>
+
+    <h1 data-txt="ahh!" aria-label="Expired Link Error" style="
+					text-align: center;
+                    width: 300px;
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    padding: 0px 0px;
+                    " />a<span>h</span><span></span>h<span>!</span></h1>
+    <p>All good things come to an end.<br><br>In this case the link has expired so cannot be accessed. <br><br>Please
+        contact the original sender to issue a new link. <br><br></p>
+
+</body>
+
+</html>
+{{pass}}
